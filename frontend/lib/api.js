@@ -18,8 +18,25 @@ api.interceptors.request.use((config) => {
 });
 
 export const login = async (credentials) => {
-  const response = await api.post("/auth/login", credentials);
-  return response.data.token;
+  try {
+    console.log("Making login request to:", `${API_URL}/auth/login`);
+    const response = await api.post("/auth/login", credentials);
+    console.log("Login response received:", response.data);
+
+    if (!response.data || !response.data.token) {
+      throw new Error("Invalid response format");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Login request failed:", error);
+    throw error;
+  }
+};
+
+export const register = async (userData) => {
+  const response = await api.post("/auth/register", userData);
+  return response.data;
 };
 
 export const saveFile = async (content) => {

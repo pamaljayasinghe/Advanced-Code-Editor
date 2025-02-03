@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 
 export default function Layout({ children }) {
   return (
-    <>
+    <div className="layout">
       <Head>
         <title>Advanced Code Editor</title>
         <meta
@@ -13,7 +13,7 @@ export default function Layout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <main>{children}</main>
-    </>
+      <main className="main-content">{children}</main>
+    </div>
   );
 }

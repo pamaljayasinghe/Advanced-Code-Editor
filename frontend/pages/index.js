@@ -1,29 +1,51 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import Layout from "../components/Layout";
 import { useRouter } from "next/router";
-import { checkAuth } from "../lib/auth";
+import Layout from "../components/Layout";
 
+// Dynamically import CodeEditor with no SSR
 const CodeEditor = dynamic(() => import("../components/CodeEditor"), {
   ssr: false,
 });
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const auth = checkAuth();
-    if (!auth) {
-      router.push("/login");
-    }
-    setIsAuthenticated(auth);
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      console.log(
+        "Checking authentication token:",
+        token ? "exists" : "not found"
+      );
+
+      if (!token) {
+        console.log("No token found, redirecting to login...");
+        router.push("/login");
+        return;
+      }
+
+      setIsAuthenticated(true);
+      setIsLoading(false);
+    };
+
+    checkAuth();
   }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <Layout>
       <div className="editor-container">
-        {isAuthenticated && <CodeEditor />}
+        <CodeEditor />
       </div>
     </Layout>
   );

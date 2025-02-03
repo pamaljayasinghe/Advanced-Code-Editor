@@ -1,9 +1,16 @@
 :root {
   --primary-color: #1a73e8;
+  --primary-hover: #1557b0;
   --secondary-color: #2c2c2c;
   --background-dark: #1e1e1e;
+  --background-light: #f5f5f5;
   --text-light: #ffffff;
   --text-dark: #2c2c2c;
+  --error-color: #dc3545;
+  --success-color: #28a745;
+  --border-color: #e0e0e0;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --nav-height: 60px;
 }
 
 * {
@@ -15,83 +22,253 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  background-color: var(--background-dark);
-  color: var(--text-light);
+  background-color: var(--background-light);
+  color: var(--text-dark);
+  line-height: 1.6;
 }
 
-.editor-container {
-  height: calc(100vh - 60px);
+/* Auth Pages Shared Styles */
+.login-container,
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
   padding: 20px;
 }
 
-.monaco-editor {
-  height: 100%;
+.login-form,
+.register-form {
+  background-color: var(--text-light);
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--box-shadow);
+}
+
+.login-form h1,
+.register-form h1 {
+  margin-bottom: 30px;
+  text-align: center;
+  color: var(--text-dark);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
-  overflow: hidden;
+  background-color: var(--background-light);
+  color: var(--text-dark);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+button[type="submit"] {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+button[type="submit"]:hover {
+  background-color: var(--primary-hover);
+}
+
+.secondary-button {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+.secondary-button:hover {
+  background-color: rgba(26, 115, 232, 0.1);
+}
+
+.error {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.divider {
+  margin: 24px 0;
+  text-align: center;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.divider span {
+  background-color: var(--text-light);
+  padding: 0 10px;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+}
+
+/* Navbar Styles */
+.navbar {
+  height: var(--nav-height);
+  background-color: var(--secondary-color);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  color: var(--text-light);
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.navbar-menu {
+  margin-left: auto;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-menu a {
+  color: var(--text-light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+}
+
+.navbar-menu a:hover {
+  opacity: 0.8;
+}
+
+/* Editor Styles */
+.editor-container {
+  height: calc(100vh - var(--nav-height));
+  background-color: var(--background-dark);
+  padding: 20px;
 }
 
 .editor-wrapper {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: var(--secondary-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.editor-header {
+  padding: 16px;
+  background-color: var(--secondary-color);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.editor-title {
+  color: var(--text-light);
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .active-users {
-  padding: 10px;
-  background-color: var(--secondary-color);
-  border-radius: 8px 8px 0 0;
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .user-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  margin-right: 8px;
-  background-color: var(--primary-color);
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.login-container {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
+  display: inline-flex;
   align-items: center;
-}
-
-.login-form {
-  background-color: var(--secondary-color);
-  padding: 40px;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 400px;
-}
-
-.login-form h1 {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.login-form input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 16px;
-  border: none;
-  border-radius: 4px;
-  background-color: var(--background-dark);
-  color: var(--text-light);
-}
-
-.login-form button {
-  width: 100%;
-  padding: 12px;
+  padding: 6px 12px;
   background-color: var(--primary-color);
+  border-radius: 20px;
+  font-size: 0.9rem;
   color: var(--text-light);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
+  font-weight: 500;
 }
 
-.login-form button:hover {
-  opacity: 0.9;
+.monaco-editor {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-form,
+  .register-form {
+    padding: 30px 20px;
+  }
+
+  .login-form h1,
+  .register-form h1 {
+    font-size: 1.75rem;
+  }
+
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .editor-container {
+    padding: 12px;
+  }
+}
+
+/* Success Messages */
+.success-message {
+  background-color: var(--success-color);
+  color: var(--text-light);
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

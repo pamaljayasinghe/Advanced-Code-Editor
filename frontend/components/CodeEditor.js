@@ -1,40 +1,27 @@
-import { useEffect, useRef, useState } from "react";
-import * as monaco from "monaco-editor";
+import { useRef, useState } from "react";
+import Editor from "@monaco-editor/react";
 import { initWebSocket } from "../lib/websocket";
 
 export default function CodeEditor() {
   const editorRef = useRef(null);
-  const monacoRef = useRef(null);
   const [activeUsers, setActiveUsers] = useState([]);
   const wsRef = useRef(null);
 
-  useEffect(() => {
-    if (editorRef.current) {
-      monacoRef.current = monaco.editor.create(editorRef.current, {
-        value: "// Start coding here\n",
-        language: "javascript",
-        theme: "vs-dark",
-        automaticLayout: true,
-      });
+  function handleEditorDidMount(editor, monaco) {
+    editorRef.current = editor;
 
-      // Initialize WebSocket connection
-      wsRef.current = initWebSocket({
-        onMessage: handleWsMessage,
-        onUserUpdate: handleUserUpdate,
-      });
-
-      return () => {
-        monacoRef.current.dispose();
-        wsRef.current.close();
-      };
-    }
-  }, []);
+    // Initialize WebSocket connection
+    wsRef.current = initWebSocket({
+      onMessage: handleWsMessage,
+      onUserUpdate: handleUserUpdate,
+    });
+  }
 
   const handleWsMessage = (message) => {
-    if (message.type === "code_update") {
-      const position = monacoRef.current.getPosition();
-      monacoRef.current.setValue(message.content);
-      monacoRef.current.setPosition(position);
+    if (message.type === "code_update" && editorRef.current) {
+      const position = editorRef.current.getPosition();
+      editorRef.current.setValue(message.content);
+      editorRef.current.setPosition(position);
     }
   };
 
@@ -51,7 +38,13 @@ export default function CodeEditor() {
           </span>
         ))}
       </div>
-      <div ref={editorRef} className="monaco-editor" />
+      <Editor
+        height="90vh"
+        defaultLanguage="javascript"
+        defaultValue="// Start coding here"
+        theme="vs-dark"
+        onMount={handleEditorDidMount}
+      />
     </div>
   );
 }

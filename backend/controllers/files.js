@@ -5,14 +5,14 @@ exports.saveFile = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const [result] = await db.execute(
+    const [result] = await db.query(
       "INSERT INTO files (user_id, content) VALUES (?, ?)",
       [userId, content]
     );
 
     res.json({ id: result.insertId });
   } catch (error) {
-    console.error(error);
+    console.error("Save file error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -22,18 +22,18 @@ exports.getFile = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const [files] = await db.execute(
+    const [rows] = await db.query(
       "SELECT * FROM files WHERE id = ? AND user_id = ?",
       [id, userId]
     );
 
-    if (files.length === 0) {
+    if (rows.length === 0) {
       return res.status(404).json({ message: "File not found" });
     }
 
-    res.json(files[0]);
+    res.json(rows[0]);
   } catch (error) {
-    console.error(error);
+    console.error("Get file error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
