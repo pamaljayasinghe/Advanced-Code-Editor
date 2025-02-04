@@ -34,7 +34,10 @@ code-editor/
 │   ├── routes/
 │   │   ├── auth.js
 │   │   └── files.js
+│   ├── services/
+│   │   └── websocket.bal     # Ballerina WebSocket service
 │   ├── .env
+│   ├── Ballerina.toml
 │   ├── package.json
 │   └── server.js
 └── database/
@@ -67,7 +70,7 @@ npm install lucide-react @monaco-editor/react
 ```bash
 # Frontend (.env.local)
 NEXT_PUBLIC_API_URL=http://localhost:3001
-NEXT_PUBLIC_WS_URL=ws://localhost:3001
+NEXT_PUBLIC_WS_URL=ws://localhost:8080  # Ballerina WebSocket URL
 RAPIDAPI_KEY=your-rapidapi-key-here    # Get from RapidAPI Judge0 API (Free)
 
 # Backend (.env)
@@ -142,9 +145,15 @@ const LANGUAGE_IDS = {
 ### Backend
 - Node.js
 - Express
+- Ballerina (WebSocket service)
 - Socket.IO
 - MySQL
 - JWT Authentication
+
+### Services
+- Ballerina WebSocket (User registration & real-time features)
+- Judge0 RapidAPI (Code execution)
+- Socket.IO (Real-time collaboration)
 
 ### UI Components
 - Lucide React Icons
