@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const JUDGE0_API_URL = "https://judge0-ce.p.rapidapi.com";
-const RAPIDAPI_KEY = "268f75a068msh611717c67c39c4fp1ab9d2jsnf64d60a7da7b"; // You'll need to get this from RapidAPI
+const RAPIDAPI_KEY = "Your API Here"; // You'll need to get this from RapidAPI
 
 // Language IDs for Judge0
 const LANGUAGE_IDS = {
