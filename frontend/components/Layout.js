@@ -1,19 +1,14 @@
 import Head from "next/head";
-import Navbar from "./Navbar";
 
 export default function Layout({ children }) {
   return (
-    <div className="layout">
+    <>
       <Head>
-        <title>Advanced Code Editor</title>
-        <meta
-          name="description"
-          content="Real-time collaborative code editor"
-        />
+        <title>Code Editor</title>
+        <meta name="description" content="Online collaborative code editor" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Navbar />
-      <main className="main-content">{children}</main>
-    </div>
+      </Head>{" "}
+      <main>{children}</main>
+    </>
   );
 }

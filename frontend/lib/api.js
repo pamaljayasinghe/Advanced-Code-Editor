@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = "http://localhost:3001";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -9,6 +9,7 @@ const api = axios.create({
   },
 });
 
+// Add request interceptor for auth token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -19,32 +20,24 @@ api.interceptors.request.use((config) => {
 
 export const login = async (credentials) => {
   try {
-    console.log("Making login request to:", `${API_URL}/auth/login`);
     const response = await api.post("/auth/login", credentials);
-    console.log("Login response received:", response.data);
-
-    if (!response.data || !response.data.token) {
-      throw new Error("Invalid response format");
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
     }
-
     return response.data;
   } catch (error) {
-    console.error("Login request failed:", error);
+    console.error("Login error:", error);
     throw error;
   }
 };
 
 export const register = async (userData) => {
-  const response = await api.post("/auth/register", userData);
-  return response.data;
-};
-
-export const saveFile = async (content) => {
-  const response = await api.post("/files/save", { content });
-  return response.data;
-};
-
-export const getFile = async (fileId) => {
-  const response = await api.get(`/files/${fileId}`);
-  return response.data;
+  try {
+    const response = await api.post("/auth/register", userData);
+    return response.data;
+  } catch (error) {
+    console.error("Registration error:", error);
+    throw error;
+  }
 };

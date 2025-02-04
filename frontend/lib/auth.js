@@ -1,6 +1,8 @@
-import { jwtDecode } from "jwt-decode"; // Changed from jwt_decode to jwtDecode
+import { jwtDecode } from "jwt-decode";
 
 export const checkAuth = () => {
+  if (typeof window === "undefined") return false;
+
   const token = localStorage.getItem("token");
   if (!token) return false;
 
@@ -14,19 +16,20 @@ export const checkAuth = () => {
 };
 
 export const getUser = () => {
+  if (typeof window === "undefined") return null;
+
   try {
-    const token = localStorage.getItem("token");
-    if (!token) return null;
-    return jwtDecode(token);
+    const userStr = localStorage.getItem("user");
+    return userStr ? JSON.parse(userStr) : null;
   } catch (error) {
     return null;
   }
 };
 
 export const handleLogout = () => {
+  if (typeof window === "undefined") return;
+
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  if (typeof window !== "undefined") {
-    window.location.href = "/login";
-  }
+  window.location.href = "/login";
 };

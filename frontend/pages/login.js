@@ -15,28 +15,12 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      console.log("Attempting login...");
       const response = await login(credentials);
-      console.log("Login response:", response);
-
-      if (response?.token) {
-        // Store token and user data
-        localStorage.setItem("token", response.token);
-        if (response.user) {
-          localStorage.setItem("user", JSON.stringify(response.user));
-        }
-
-        console.log("Redirecting to editor...");
-        // Force a hard navigation to ensure proper page reload
-        window.location.href = "/";
-      } else {
-        throw new Error("No token received");
+      if (response.token) {
+        router.push("/");
       }
     } catch (error) {
-      console.error("Login error:", error);
-      setError(
-        error?.response?.data?.message || "Login failed. Please try again."
-      );
+      setError("Login failed. Please check your credentials.");
     } finally {
       setIsLoading(false);
     }
@@ -48,59 +32,59 @@ export default function Login() {
         <title>Login - Code Editor</title>
       </Head>
 
-      <div className="login-container">
-        <form onSubmit={handleSubmit} className="login-form">
+      <div className="auth-container">
+        <div className="auth-card">
           <h1>Welcome Back</h1>
+          <p className="auth-subtitle">Enter your credentials to continue</p>
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={credentials.email}
-              onChange={(e) =>
-                setCredentials({ ...credentials, email: e.target.value })
-              }
-              disabled={isLoading}
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={credentials.email}
+                onChange={(e) =>
+                  setCredentials({ ...credentials, email: e.target.value })
+                }
+                disabled={isLoading}
+                required
+              />
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={credentials.password}
-              onChange={(e) =>
-                setCredentials({ ...credentials, password: e.target.value })
-              }
-              disabled={isLoading}
-              required
-            />
-          </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={credentials.password}
+                onChange={(e) =>
+                  setCredentials({ ...credentials, password: e.target.value })
+                }
+                disabled={isLoading}
+                required
+              />
+            </div>
 
-          {error && <div className="error">{error}</div>}
+            {error && <div className="auth-error">{error}</div>}
 
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
-          </button>
+            <button type="submit" className="auth-button" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"}
+            </button>
 
-          <div className="divider">
-            <span>or</span>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => router.push("/register")}
-            className="secondary-button"
-            disabled={isLoading}
-          >
-            Create Account
-          </button>
-        </form>
+            <div className="auth-links">
+              <button
+                type="button"
+                onClick={() => router.push("/register")}
+                className="auth-link-button"
+              >
+                Don't have an account? Register
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );
