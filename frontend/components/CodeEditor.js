@@ -1,49 +1,83 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
-import { initWebSocket } from "../lib/websocket";
+import io from "socket.io-client";
 
 export default function CodeEditor() {
-  const editorRef = useRef(null);
+  const [value, setValue] = useState("// Start coding here");
+  const [theme, setTheme] = useState("vs-dark");
+  const [socket, setSocket] = useState(null);
   const [activeUsers, setActiveUsers] = useState([]);
-  const wsRef = useRef(null);
 
-  function handleEditorDidMount(editor, monaco) {
-    editorRef.current = editor;
+  useEffect(() => {
+    // Initialize socket connection
+    const newSocket = io("http://localhost:3001");
+    setSocket(newSocket);
 
-    // Initialize WebSocket connection
-    wsRef.current = initWebSocket({
-      onMessage: handleWsMessage,
-      onUserUpdate: handleUserUpdate,
+    newSocket.on("connect", () => {
+      console.log("Connected to server");
+      // Send user info when connected
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user) {
+        newSocket.emit("userJoined", { userId: user.id, name: user.name });
+      }
     });
-  }
 
-  const handleWsMessage = (message) => {
-    if (message.type === "code_update" && editorRef.current) {
-      const position = editorRef.current.getPosition();
-      editorRef.current.setValue(message.content);
-      editorRef.current.setPosition(position);
+    newSocket.on("codeChange", (newCode) => {
+      setValue(newCode);
+    });
+
+    newSocket.on("activeUsers", (users) => {
+      setActiveUsers(users);
+    });
+
+    return () => newSocket.disconnect();
+  }, []);
+
+  const handleEditorChange = (newValue) => {
+    setValue(newValue);
+    if (socket) {
+      socket.emit("codeChange", newValue);
     }
   };
 
-  const handleUserUpdate = (users) => {
-    setActiveUsers(users);
+  const toggleTheme = () => {
+    setTheme(theme === "vs-dark" ? "light" : "vs-dark");
   };
 
   return (
-    <div className="editor-wrapper">
-      <div className="active-users">
-        {activeUsers.map((user) => (
-          <span key={user.id} className="user-badge">
-            {user.name}
-          </span>
-        ))}
+    <div className="editor-container">
+      <div className="editor-header">
+        <div className="editor-controls">
+          <button onClick={toggleTheme} className="theme-toggle">
+            {theme === "vs-dark" ? "☀️ Light" : "🌙 Dark"}
+          </button>
+          <div className="active-users">
+            {activeUsers.map((user) => (
+              <span key={user.userId} className="user-badge">
+                {user.name}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
       <Editor
         height="90vh"
         defaultLanguage="javascript"
-        defaultValue="// Start coding here"
-        theme="vs-dark"
-        onMount={handleEditorDidMount}
+        value={value}
+        theme={theme}
+        onChange={handleEditorChange}
+        options={{
+          minimap: { enabled: true },
+          fontSize: 14,
+          automaticLayout: true,
+          lineNumbers: "on",
+          roundedSelection: false,
+          scrollBeyondLastLine: false,
+          readOnly: false,
+          cursorStyle: "line",
+          folding: true,
+          wordWrap: "on",
+        }}
       />
     </div>
   );
