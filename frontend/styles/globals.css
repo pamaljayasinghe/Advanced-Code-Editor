@@ -48,33 +48,74 @@ body.dark-theme {
   position: relative;
 }
 
-/* Editor Main Area */
-.editor-workspace {
-  display: flex;
+/* Editor Container Fixes */
+.editor-container {
   flex: 1;
+  display: flex;
   height: calc(100vh - var(--header-height));
   position: relative;
 }
 
-.editor-main {
+.editor-workspace {
+  display: flex;
   flex: 1;
   height: 100%;
   overflow: hidden;
+}
+
+.editor-main {
+  flex: 1;
+  min-width: 0; /* Prevents flex items from overflowing */
+  height: 100%;
+  background: var(--editor-bg-light);
+}
+
+.dark-theme .editor-main {
+  background: var(--editor-bg-dark);
 }
 
 /* Monaco Editor Specific */
 .monaco-editor {
   width: 100% !important;
   height: 100% !important;
-  min-height: calc(100vh - var(--header-height)) !important;
 }
 
-.monaco-editor .margin {
-  background-color: var(--editor-bg-light) !important;
+/* Output Panel */
+.output-panel {
+  width: 300px;
+  min-width: 300px;
+  background: var(--editor-bg-light);
+  border-left: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.dark-theme .monaco-editor .margin {
-  background-color: var(--editor-bg-dark) !important;
+.output-header {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.output-content {
+  flex: 1;
+  padding: 16px;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  font-size: 13px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  background: var(--editor-bg-light);
+}
+
+.dark-theme .output-panel {
+  background: var(--editor-bg-dark);
+  border-color: var(--border-dark);
+}
+
+.dark-theme .output-content {
+  background: var(--editor-bg-dark);
 }
 
 /* Header */
@@ -125,28 +166,22 @@ body.dark-theme {
   background: var(--bg-dark);
   border-color: var(--border-dark);
 }
-
-/* Users Panel - Fixed Right Side */
-.users-panel {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: var(--sidebar-width);
-  height: 100%;
+/* Users Drawer Styles */
+.users-drawer {
+  width: 100%;
   background: var(--editor-bg-light);
-  border-left: 1px solid var(--border-light);
-  transform: translateX(0);
-  transition: transform 0.3s ease;
-  z-index: 50;
+  border-top: 1px solid var(--border-light);
+  transition: all 0.3s ease;
 }
 
-.dark-theme .users-panel {
+.dark-theme .users-drawer {
   background: var(--editor-bg-dark);
   border-color: var(--border-dark);
 }
 
-.users-panel.collapsed {
-  transform: translateX(calc(var(--sidebar-width) - 40px));
+.users-drawer.collapsed .users-content {
+  max-height: 0;
+  opacity: 0;
 }
 
 .users-header {
@@ -154,9 +189,9 @@ body.dark-theme {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border-light);
   cursor: pointer;
   background: inherit;
+  user-select: none;
 }
 
 .users-title {
@@ -181,17 +216,19 @@ body.dark-theme {
   transition: transform 0.3s ease;
 }
 
-.collapsed .collapse-icon {
+.collapse-icon.rotated {
   transform: rotate(180deg);
 }
 
 .users-content {
-  height: calc(100% - 50px);
+  max-height: 300px;
+  opacity: 1;
   overflow-y: auto;
+  transition: all 0.3s ease;
 }
 
 .user-list {
-  padding: 8px;
+  padding: 0 16px 16px;
 }
 
 .user-item {
@@ -201,6 +238,11 @@ body.dark-theme {
   padding: 8px 12px;
   border-radius: 6px;
   margin-bottom: 4px;
+  background: var(--bg-light);
+}
+
+.dark-theme .user-item {
+  background: var(--bg-dark);
 }
 
 .user-status {
@@ -208,6 +250,20 @@ body.dark-theme {
   height: 8px;
   border-radius: 50%;
   background: #48bb78;
+  position: relative;
+}
+
+.user-status::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(72, 187, 120, 0.2);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 1.5s infinite;
 }
 
 .user-details {
@@ -226,6 +282,42 @@ body.dark-theme {
   color: #718096;
 }
 
+.user-item-empty {
+  text-align: center;
+  padding: 12px;
+  color: #718096;
+  font-size: 14px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Update editor container to accommodate the drawer */
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--header-height));
+}
+
+.editor-workspace {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+@media (max-width: 768px) {
+  .users-content {
+    max-height: 200px;
+  }
+}
 /* Output Panel */
 .output-panel {
   width: 300px;
