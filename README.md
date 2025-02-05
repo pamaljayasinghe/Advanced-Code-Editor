@@ -91,7 +91,13 @@ npm run dev
 # Terminal 2: Start backend
 cd backend
 npm run dev
+
+
+#Terminal 3: Start Ballarina
+cd backend
+bal run services/websocket.bal
 ```
+
 
 5. Access the application:
 - Frontend: http://localhost:3000
